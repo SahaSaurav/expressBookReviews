@@ -1,7 +1,9 @@
 const express = require('express');
+const axios = require('axios').default;
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
+
 const public_users = express.Router();
 
 
@@ -57,5 +59,31 @@ public_users.get('/review/:isbn',function (req, res) {
   } 
   return res.status(200).json({message: `No reviews exist for book with isbn ${isbn}`});
 });
+
+const BOOK_SERVICE_URL = "https://u16ssaha-5000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai"
+
+// Task 10
+const getBooks = async () => {
+    const books = await axios.get(BOOK_SERVICE_URL+"/");
+    console.log(books);
+}
+// Task 11
+const getBookByISBN = async (isbn) => {
+    const book = await axios.get(BOOK_SERVICE_URL+`/isbn/${isbn}`);
+    console.log(book);
+}
+// Task 12
+const getBookByAuthor = async (author) => {
+    const authorParam = author.split(" ").join("+");
+    const book = await axios.get(BOOK_SERVICE_URL+`/author/${authorParam}`);
+    console.log(book);
+}
+// Task 13
+const getBookByTitle = async (title) => {
+    const titleParam = title.split(" ").join("+");
+    const books = await axios.get(BOOK_SERVICE_URL+`/title/${titleParam}`);
+    console.log(books);
+}
+
 
 module.exports.general = public_users;

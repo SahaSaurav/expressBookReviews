@@ -55,6 +55,21 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     return res.status(400).json({ message: "Submitted review already exists" });
 });
 
+// Delete a book review
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    const isbn = req.params.isbn;
+    const bookDetails = books[isbn];
+    const reviewId = req.session.authorization.username;
+
+    if (!bookDetails) {
+        return res.status(404).json({message: `Book with isbn ${isbn} does not exist`});
+    }
+
+    delete bookDetails.reviews[reviewId];
+
+    return res.status(200).json({message: `Deleted user review for book with isbn ${isbn}`});
+})
+
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
 module.exports.users = users;
